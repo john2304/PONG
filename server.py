@@ -9,6 +9,12 @@ db_location = 'database.sqlite3.db'
 def index():
     return render_template('index.html')
 
+
+@app.route("/index/1player/")
+def game():
+    return render_template('1player.html')
+
+
 def get_db():
     db = getattr(g, 'db', None)
     if db is None:
@@ -16,11 +22,13 @@ def get_db():
         g.db = db
     return db
 
+
 @app.teardown_appcontext
 def close_dbconnection(exception):
-    db = getattr(g, 'db',None)
+    db = getattr(g, 'db', None)
     if db is not None:
         db.close()
+
 
 def init_db():
     with app.app_context():
@@ -29,11 +37,12 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
-#@app.route('/index/')
-#def root():
- #   db = get_db()
-  #  db.cursor().execute('insert into user_info values("001", "John", 10, 5)')
-   # db.commit()
+
+# @app.route('/index/')
+# def root():
+#   db = get_db()
+#  db.cursor().execute('insert into user_info values("001", "John", 10, 5)')
+# db.commit()
 
 
 if __name__ == "__main__":

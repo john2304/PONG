@@ -1,31 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 <head>
 <meta charset ="UTF -8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="script.js" defer></script>
-<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet"/>
-<title>ToastieTruck</title>
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+<title>Pong Home</title>
 
 </head>
 <body>
-	
-	<div class="topnav">
-		<a href="index.html" >
-		<img href="/img/index.html" src="C:\Users\johnm\OneDrive\Documents\UNI\year2\WT\img\logo2.png" alt="ToastieTruck" style="width:400px;height:40px;">
-		</a>
-		<a href = "events.html" >Events</a> 
-		<a href ="menu.html" >Menu</a> 
-		<a href ="reviews.html">Reviews</a> 		
-	</div>
-    
-	<div id="content">
-		<img src="C:\Users\johnm\OneDrive\Documents\UNI\year2\WT\img\truck.png" alt="Truck" class="bg">
+<div class="index-screen">
+<div class="court"></div>
+    <div class="options">
+<button>
+<a class="one-player-link" href="/index/1player/" id="onePlayerBtn">Player 1</a>
+</button>
 
-    </div>
+<button id="twoPlayerBtn" class="two-player-link">Player 2</button>
+<div id="2playerOptions" style="display: none;">
+</div>
+<div id="gameOptions" style="display: none;">
+    <!-- Content for game options -->
+    <p>Game options...</p>
+</div>
+</div>
+</div>
+</div>
+
     <div id="footer">
-        <p>& copy ; 2023 - ToastieTruck - All rights reserved</p>
     </div>
+
+	<script src="../js/script.js"></script> <!-- Link to your external JavaScript file -->
 
 </body>
 </html>

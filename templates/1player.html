@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset ="UTF -8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="script.js" defer></script>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet"/>
+    <title>1 Player</title>
+</head>
+<body>
+  <div class="index-screen">
+    <div class="court"></div>
+    <div class="options">
+      <button id="onePlayerBtn">Player 1</button>
+      <div class="game-options" style="display: none;">
+        <button id="easyBtn">Easy</button>
+        <button id="mediumBtn">Medium</button>
+        <button id="hardBtn">Hard</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script> <!-- Link to your external JavaScript file -->
+</body>
+</html>
