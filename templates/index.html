@@ -1,35 +1,23 @@
-<!DOCTYPE html>
-<html lang="">
-<head>
-<meta charset ="UTF -8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-<title>Pong Home</title>
+{% extends 'template.html' %}
 
-</head>
-<body>
+{% block content %}
+
 <div class="index-screen">
 <div class="court"></div>
     <div class="options">
-<button>
-<a class="one-player-link" href="/index/1player/" id="onePlayerBtn">Player 1</a>
-</button>
 
-<button id="twoPlayerBtn" class="two-player-link">Player 2</button>
-<div id="2playerOptions" style="display: none;">
-</div>
-<div id="gameOptions" style="display: none;">
-    <!-- Content for game options -->
-    <p>Game options...</p>
-</div>
-</div>
+    <a class="one-player-link" href="/index/1player/" >Player 1</a>
+
+    <a class="two-player-link" href="/index/2player/" >Player 2</a>
+
 </div>
 </div>
 
     <div id="footer">
     </div>
 
-	<script src="../js/script.js"></script> <!-- Link to your external JavaScript file -->
+	<script src="../static/js/script.js"></script>
 
-</body>
-</html>
+
+
+{% endblock %}

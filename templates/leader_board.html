@@ -1,0 +1,37 @@
+{% extends 'template.html' %}
+{% block content %}
+
+<div class="container">
+    <table>
+        <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th style="text-align: right">Score</th>
+        </tr>
+        {% for value in leader_board %}
+            <tr>
+                {% if value[1][0] == highlight %}
+                    <td id="active" style="background-color: #4CAF50">{{value[0]+1}}</td>
+                    <td style="background-color: #4CAF50">{{value[1][0]}}</td>
+                    <td style="background-color: #4CAF50; text-align: right">{{value[1][1]}}</td>
+                    <script>
+                        document.getElementById("active").scrollIntoView();
+                    </script>
+                {% else %}
+                    <td>{{value[0]+1}}</td>
+                    <td>{{value[1][0]}}</td>
+                    <td style="text-align: right">{{value[1][1]}}</td>
+                {% endif %}
+
+            </tr>
+        {% endfor %}
+
+    </table>
+
+    {% if play_again %}
+    <button style="margin-top: 5px;" onclick="window.location.replace('/')">Play Again</button>
+    {% endif %}
+
+</div>
+
+{% endblock %}
