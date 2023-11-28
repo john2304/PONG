@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect
-from flask_wtf import FlaskForm, CSRFProtect
+from flask_wtf import FlaskForm, CSRFProtect, form
 from wtforms import StringField, SubmitField, validators
 from wtforms.validators import DataRequired
 from flask_heroku import Heroku
@@ -60,7 +60,6 @@ def game_page():
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     names = [tup[0] for tup in c.execute("SELECT user_name FROM leader_board")]
-    #conn.close()
 
     form = SubmitForm()
     if form.validate_on_submit():
@@ -72,7 +71,7 @@ def game_page():
         conn.commit()
         c.close()
         conn.close()
-    return render_template("1player.html", title="1player", win_point=1, ai_speed=5, form=form, names=names)
+    return render_template("1player.html", title="1player", win_point=3, ai_speed=5, form=form, names=names)
 
 @app.route("/index/2player/")
 def player2():

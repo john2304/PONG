@@ -1,79 +1,74 @@
+// Global variables for game state
+let stop;
+let canvas, canvas_context;
+let p1y, p2y, pt, ph, bx, by, bd, xv, yv;
+let score1, score2;
+let winPoint;
+let reboundSound;
+let ais;
+let names;
 
-var stop;
-var wait = 1000;
-var keep_going = true;
+function setupGameVariables() {
+    // Initialize game variables
+    var stop;
+    var wait = 1000;
+    var keep_going = true;
 
-//paddle y, thickness, height
-p1y = p2y = 40;
-pt = 10;
-ph = 100;
-//ball x, y, dimension
-bx = by = 50;
-bd = 6;
+    //paddle y, thickness, height
+    p1y = p2y = 40;
+    pt = 10;
+    ph = 100;
+    //ball x, y, dimension
+    bx = by = 50;
+    bd = 6;
 
-//track score
-score1 = score2 = 0;
-
-// score to play to
-win_point = {{win_point}}
-
-// initial velocity of ball
-xv = yv = 10;
-
-//audio
-var rebound_sound = new Audio('/static/sounds/bounce.mp3');
-
-// speed ai moves paddle
-var ais = {{ai_speed}}
-
-
-// cast python list to json
-var names = {{names|tojson}}
-
-
-// get score and add value to hidden form
-var calculate_score = function () {
-    // console.log("submit " + score1 + ", " + score2);
-
-    // show hidden form
-    document.getElementById("form-hidden").style.display = "block";
-
-    // calculate score, may be redundant if function is just used to toggle view, but isn't expensive
-    document.getElementById("score").value = score1 - score2;
-
-    document.getElementById("show_score").innerHTML = "Score: " + (score1 - score2);
-};
-
-// restart game
-var play_again = function () {
-    //hide submit form
-    document.getElementById("form-hidden").style.display = "none";
-
-    //reset scores
+    //track score
     score1 = score2 = 0;
-    // reset ball and paddles
-    reset()
 
-    // start game loop
-    keep_going = true;
-    stop = setInterval(update, 1000 / 30);
+    // score to play to
+    win_point = {{win_point}}
+
+    // initial velocity of ball
+    xv = yv = 10;
+
+    //audio
+    var rebound_sound = new Audio('/static/sounds/bounce.mp3');
+
+    // speed ai moves paddle
+    var ais = {{ai_speed}}
+
+
+    // cast python list to json
+    var names = {{names|tojson}}
+
+function setupGame() {
+    // Code to initialize the game (canvas setup, event listeners, etc.)
+    // This function prepares the game but doesn't start it
+    // main game
+    window.onload = function () {
+        canvas = document.getElementById("canvas");
+        canvas_context = canvas.getContext("2d");
+
+        // frame rate for game
+        stop = setInterval(update, 1000 / 30);
+
+        //user controls
+        canvas.addEventListener("mousemove", function (e) {
+            // keep center of paddle 1 at location of users mouse
+            p1y = e.clientY - ph;
+        });
+
+    }
 }
 
+function startGame() {
+    // Code to start your Pong game
+    // This function initiates the game logic and loop
+    setupGameVariables();
+    setupGame(); // Initialize the game
 
-// main game
-window.onload = function () {
-    canvas = document.getElementById("canvas");
-    canvas_context = canvas.getContext("2d");
-
-    // frame rate for game
+    // Start game loop
     stop = setInterval(update, 1000 / 30);
-
-    //user controls
-    canvas.addEventListener("mousemove", function (e) {
-        // keep center of paddle 1 at location of users mouse
-        p1y = e.clientY - ph;
-    });
-
 }
 
 function reset() {
@@ -186,6 +181,41 @@ function update() {
 
 }
 
+// get score and add value to hidden form
+var calculate_score = function () {
+    // console.log("submit " + score1 + ", " + score2);
+
+    // show hidden form
+    document.getElementById("form-hidden").style.display = "block";
+
+    // calculate score, may be redundant if function is just used to toggle view, but isn't expensive
+    document.getElementById("score").value = score1 - score2;
+
+    document.getElementById("show_score").innerHTML = "Score: " + (score1 - score2);
+};
+
+var play_again = function () {
+    //hide submit form
+    document.getElementById("form-hidden").style.display = "none";
+
+    //reset scores
+    score1 = score2 = 0;
+    // reset ball and paddles
+    reset()
+
+    // start game loop
+    keep_going = true;
+    stop = setInterval(update, 1000 / 30);
+}
+
+$(document).ready(function () {
+    // Event listener for the "Start Game" button
+    $('start-button').click(function () {
+        startGame(); // Call the startGame function when the button is clicked
+        console.log('Button Clicked!'); // Add a console log statement for testing
+    })
+}
+
 
 // continuously validate form input, show user that a unique name must be chosen
 $("#user_name").change(function () {
@@ -201,3 +231,11 @@ $("#user_name").change(function () {
 });
 
 
+// Event listener for the "Start Game" button using pure JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    let startButton = document.getElementById('start-game-button');
+    startButton.addEventListener('click', function() {
+        startGame(); // Call the startGame function when the button is clicked
+        console.log('Button Clicked!'); // For testing
+    });
+});

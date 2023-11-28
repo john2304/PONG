@@ -21,4 +21,3 @@ def unique_user(form, field):
 class SubmitForm(Form):
     user_name = StringField('name', [validators.DataRequired(), unique_user])
     score = StringField("score")
-    #recaptcha = RecaptchaField()
