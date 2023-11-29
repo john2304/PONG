@@ -1,22 +1,21 @@
 {% extends 'template.html' %}
 
 {% block content %}
+<canvas id="canvas" width="1040" height="720" style="border:1px solid #000;"></canvas>
 
 <div class="container">
-    <canvas id="canvas" width="1040" height="720"></canvas>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <form action='/index/1player/' method="POST">
         {{ form.csrf_token }}
         <label for="aiSpeedSelector">Choose AI Speed:</label>
         <select id="aiSpeedSelector" name="ai_speed">
-            <option value="5" {% if ai_speed == '5' %} selected {% endif %}>Low</option>
-            <option value="10" {% if ai_speed == '10' %} selected {% endif %}>Medium</option>
-            <option value="15" {% if ai_speed == '15' %} selected {% endif %}>High</option>
+            <option value="10" {% if ai_speed == '10' %} selected {% endif %}>Low</option>
+            <option value="15" {% if ai_speed == '15' %} selected {% endif %}>Medium</option>
+            <option value="20" {% if ai_speed == '20' %} selected {% endif %}>High</option>
         </select>
-        <input type="submit" value="Submit">
+        <input class="btn btn-default" type="submit" value="Play">
     </form>
-    <br>
     <form class="form-horizontal" id="form-hidden" method="post" role="form">
         <div class="form-group">
             <p class="form-inputs">
@@ -25,12 +24,10 @@
                 {{ form.user_name(placeholder="name") }}
                 <span id="errors"></span>
                 {{ form.score(id="score") }}
-                <br>
                 <input class="btn btn-default" id="submitButton" type="submit" value="submit score">
-                <input class="btn btn-default" onclick="play_again()" type="button" value="play again">
         </div>
     </form>
-
+    <br>
     <script>
 
         var stop;
@@ -47,9 +44,6 @@
 
         //track score
         score1 = score2 = 0;
-
-        // score to play to
-        win_point = {{win_point}}
 
         // initial velocity of ball
         xv = yv = 10;
@@ -77,21 +71,6 @@
 
             document.getElementById("show_score").innerHTML = "Score: " + (score1 - score2);
         };
-
-        // restart game
-        var play_again = function () {
-            //hide submit form
-            document.getElementById("form-hidden").style.display = "none";
-
-            //reset scores
-            score1 = score2 = 0;
-            // reset ball and paddles
-            reset()
-
-            // start game loop
-            keep_going = true;
-            stop = setInterval(update, 1000 / 30);
-        }
 
 
         // main game
@@ -123,14 +102,22 @@
         }
 
         function update() {
-            if (score1 == win_point || score2 == win_point) {
-                clearInterval(stop);
-                calculate_score()
-            }
-
             // move ball, add velocity to coordinate of ball
             bx += xv;
             by += yv;
+
+            // Increase score if ball hits player 1's paddle
+            if (bx < pt && (by > p1y && by < p1y + ph)) {
+                xv = -xv; // Reverse ball's direction
+                score1++;
+            }
+
+            // Check if ball passes the paddles without being hit
+            if ((bx < 0 && (by <= p1y || by >= p1y + ph)) || (bx > canvas.width && (by <= p2y || by >= p2y + ph))) {
+                clearInterval(stop);
+                calculate_score();
+                return; // Exit the update function to stop the game loop
+            }
 
             // bounce ball at edges of screen
             // if ball is at bottom of screen trying to move down
@@ -160,12 +147,6 @@
                     dy = by - (p1y + ph / 2);
                     yv = dy * 0.3;
                 }
-                // paddle1 missed ball
-                else {
-                    // award player 2 one point, reset game
-                    score2 = score2 + 1;
-                    reset();
-                }
             }
 
             // if ball is at right of screen
@@ -184,13 +165,8 @@
                     dy = by - (p2y + ph / 2);
                     yv = dy * 0.3;
                 }
-                // paddle1 missed ball
-                else {
-                    // award player 1 one point, reset game
-                    score1 = score1 + 1;
-                    reset();
-                }
             }
+
 
             // player 2 is AI, will try to keep center of paddle 2 in line with ball y coordinate
             if (p2y + ph / 2 < by) {
@@ -214,9 +190,11 @@
             // ball
             canvas_context.fillRect(bx - bd / 2, by - bd / 2, bd, bd);
 
-            //score1 on left of screen, score2 on right
-            canvas_context.fillText(score1, 100, 100);
-            canvas_context.fillText(score2, canvas.width - 100, 100);
+            // Draw score1 at center-top of the canvas
+            canvas_context.fillStyle = "white";
+            canvas_context.font = "30px Arial";
+            canvas_context.textAlign = "center";
+            canvas_context.fillText(score1, canvas.width / 2, 30);
 
         }
 

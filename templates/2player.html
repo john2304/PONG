@@ -1,17 +1,28 @@
 {% extends 'template.html' %}
 {% block content %}
 
+<canvas id="canvas" width="1040" height="720" style="border:1px solid #000;"></canvas>
+
 <div class="container">
-    <canvas id="canvas" width="1040" height="720"></canvas>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-    <form class="form-horizontal" id="form-hidden" method="post" role="form">
-        <div class="form-group">
-            <p class="form-inputs">
-                <input class="btn btn-default" onclick="play_again()" type="button" value="play again">
-        </div>
+    <form action='/index/2player/' method="POST">
+        {{ form.csrf_token }}
+        <label for="winpointSelector">Choose Win Point:</label>
+        <select id="winpointSelector" name="win_point">
+            <option value="1" {% if win_point == '1' %} selected {% endif %}>1</option>
+            <option value="3" {% if win_point == '3' %} selected {% endif %}>3</option>
+            <option value="5" {% if win_point == '5' %} selected {% endif %}>5</option>
+            <option value="10" {% if win_point == '10' %} selected {% endif %}>10</option>
+        </select>
+        <input class="btn btn-default" type="submit" value="Play">
     </form>
-
+    <br>
+    <!-- not working currently -->
+    <div id="winnerDisplay" style="display: none;">
+        <h2>Winner: <span id="winnerName"></span></h2>
+        <p>Score: <span id="winnerScore"></span></p>
+    </div>
     <script>
         var stop;
         var wait = 1000;
@@ -43,16 +54,18 @@
 
 
         // get score and add value to hidden form
-        var calculate_score = function () {
+        var calculate_score = function (winnerName, winnerScore) {
             // console.log("submit " + score1 + ", " + score2);
-
-            // show hidden form
-            document.getElementById("form-hidden").style.display = "block";
 
             // calculate score, may be redundant if function is just used to toggle view, but isn't expensive
             document.getElementById("score").value = score1 - score2;
 
-            document.getElementById("show_score").innerHTML = "Score: " + (score1 - score2);
+            // Update the winner name and score in the display
+            document.getElementById("winnerName").textContent = winnerName;
+            document.getElementById("winnerScore").textContent = winnerScore;
+
+            // Show the winner display
+            document.getElementById("winnerDisplay").style.display = "block";
         };
 
         // main game
@@ -88,9 +101,13 @@
         }
 
         function update() {
-            if (score1 == win_point || score2 == win_point) {
+            if (score1 >= win_point || score2 >= win_point) {
                 clearInterval(stop);
-                calculate_score()
+                if (score1 > score2) {
+                    calculate_score("Player 1", score1); <!-- not working -->
+                } else {
+                    calculate_score("Player 2", score2); <!-- not working -->
+                }
             }
 
             // Smooth movement for player 1 (w,s)
@@ -184,6 +201,7 @@
             canvas_context.fillRect(bx - bd / 2, by - bd / 2, bd, bd);
 
             //score1 on left of screen, score2 on right
+            canvas_context.font = "30px Arial";
             canvas_context.fillText(score1, 100, 100);
             canvas_context.fillText(score2, canvas.width - 100, 100);
 
@@ -202,20 +220,6 @@
             }
         });
 
-        // restart game
-        var play_again = function () {
-            //hide submit form
-            document.getElementById("form-hidden").style.display = "none";
-
-            //reset scores
-            score1 = score2 = 0;
-            // reset ball and paddles
-            reset()
-
-            // start game loop
-            keep_going = true;
-            stop = setInterval(update, 1000 / 30);
-        }
 
     </script>
 

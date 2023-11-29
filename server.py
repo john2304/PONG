@@ -52,7 +52,7 @@ def home():
 
 
 @app.route('/index/1player/', methods=['GET', 'POST'])
-def game_page():
+def player1():
 
     # count number of players in database and assign that number +1 to default anon name
     db_path = 'database/pong.db'
@@ -73,9 +73,9 @@ def game_page():
 
     # Get the selected AI speed from the form
     selected_ai_speed = request.form.get('ai_speed')
-    return render_template("1player.html", title="1player", win_point=3, ai_speed=selected_ai_speed, form=form, names=names)
+    return render_template("1player.html", title="1player", ai_speed=selected_ai_speed, form=form, names=names)
 
-@app.route("/index/2player/")
+@app.route("/index/2player/", methods=['GET', 'POST'])
 def player2():
     # count number of players in database and assign that number +1 to default anon name
     db_path = 'database/pong.db'
@@ -93,7 +93,10 @@ def player2():
         conn.commit()
         c.close()
         conn.close()
-    return render_template("2player.html", title="2player", win_point=3, form=form, names=names)
+
+    # get selected score winpoint from the form
+    selected_win_point = request.form.get('win_point')
+    return render_template("2player.html", title="2player", win_point=selected_win_point, form=form, names=names)
 
 
 @app.route('/index/leader_board/')
