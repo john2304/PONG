@@ -3,9 +3,20 @@
 {% block content %}
 
 <div class="container">
-    <canvas id="canvas" width="640" height="480"></canvas>
+    <canvas id="canvas" width="1040" height="720"></canvas>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
+    <form action='/index/1player/' method="POST">
+        {{ form.csrf_token }}
+        <label for="aiSpeedSelector">Choose AI Speed:</label>
+        <select id="aiSpeedSelector" name="ai_speed">
+            <option value="5" {% if ai_speed == '5' %} selected {% endif %}>Low</option>
+            <option value="10" {% if ai_speed == '10' %} selected {% endif %}>Medium</option>
+            <option value="15" {% if ai_speed == '15' %} selected {% endif %}>High</option>
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+    <br>
     <form class="form-horizontal" id="form-hidden" method="post" role="form">
         <div class="form-group">
             <p class="form-inputs">
@@ -19,7 +30,7 @@
                 <input class="btn btn-default" onclick="play_again()" type="button" value="play again">
         </div>
     </form>
-    <!--<script src="/static/js/script2.js"></script>-->
+
     <script>
 
         var stop;

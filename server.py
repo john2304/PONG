@@ -70,7 +70,10 @@ def game_page():
         conn.commit()
         c.close()
         conn.close()
-    return render_template("1player.html", title="1player", win_point=3, ai_speed=5, form=form, names=names)
+
+    # Get the selected AI speed from the form
+    selected_ai_speed = request.form.get('ai_speed')
+    return render_template("1player.html", title="1player", win_point=3, ai_speed=selected_ai_speed, form=form, names=names)
 
 @app.route("/index/2player/")
 def player2():

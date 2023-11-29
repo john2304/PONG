@@ -2,19 +2,12 @@
 {% block content %}
 
 <div class="container">
-    <canvas id="canvas" width="640" height="480"></canvas>
+    <canvas id="canvas" width="1040" height="720"></canvas>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <form class="form-horizontal" id="form-hidden" method="post" role="form">
         <div class="form-group">
             <p class="form-inputs">
-                <span id="show_score"></span>
-                {{ form.csrf_token }}
-                {{ form.user_name(placeholder="name") }}
-                <span id="errors"></span>
-                {{ form.score(id="score") }}
-                <br>
-                <input class="btn btn-default" id="submitButton" type="submit" value="submit score">
                 <input class="btn btn-default" onclick="play_again()" type="button" value="play again">
         </div>
     </form>
@@ -67,28 +60,18 @@
             canvas = document.getElementById("canvas");
             canvas_context = canvas.getContext("2d");
 
+            // Set up event listeners for controls
+            document.addEventListener("keydown", function (event) {
+                keysPressed[event.key] = true;
+            });
+
+            document.addEventListener("keyup", function (event) {
+                keysPressed[event.key] = false;
+            });
+
             // frame rate for game
             stop = setInterval(update, 1000 / 30);
 
-            // User 1 controls with keyboard
-            document.addEventListener("keydown", function (event) {
-                // W and S keys for player 1
-                if (event.key === "w" && p1y > 0) {
-                    p1y -= 10;
-                } else if (event.key === "s" && p1y < canvas.height - ph) {
-                    p1y += 10;
-                }
-            });
-
-            // User 2 controls with arrow keys
-            document.addEventListener("keydown", function (event) {
-                // Up and Down arrow keys for player 2
-                if (event.key === "ArrowUp" && p2y > 0) {
-                    p2y -= 10;
-                } else if (event.key === "ArrowDown" && p2y < canvas.height - ph) {
-                    p2y += 10;
-                }
-            });
 
         }
 
@@ -108,6 +91,20 @@
             if (score1 == win_point || score2 == win_point) {
                 clearInterval(stop);
                 calculate_score()
+            }
+
+            // Smooth movement for player 1 (w,s)
+            if (keysPressed["w"] && p1y > 0) {
+                p1y -= 10;
+            } else if (keysPressed["s"] && p1y < canvas.height - ph) {
+                p1y += 10;
+            }
+
+            // Smooth movement for player 2 (arrow keys)
+            if (keysPressed["ArrowUp"] && p2y > 0) {
+                p2y -= 10;
+            } else if (keysPressed["ArrowDown"] && p2y < canvas.height - ph) {
+                p2y += 10;
             }
 
             // move ball, add velocity to coordinate of ball
