@@ -5,7 +5,6 @@ from wtforms.validators import DataRequired
 from flask_heroku import Heroku
 import sqlite3
 
-
 app = Flask(__name__)
 heroku = Heroku(app)
 
@@ -75,7 +74,23 @@ def game_page():
 
 @app.route("/index/2player/")
 def player2():
-    return render_template('2player.html')
+    # count number of players in database and assign that number +1 to default anon name
+    db_path = 'database/pong.db'
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    names = [tup[0] for tup in c.execute("SELECT user_name FROM leader_board")]
+
+    form = SubmitForm()
+    if form.validate_on_submit():
+        # Perform the database submission operation here
+        new_entry = helper_submit_score(user_name=form.user_name.data, score=form.score.data)
+        c.execute("INSERT INTO leader_board (user_name, score) values (?, ?)",
+                  (form.user_name.data, form.score.data))
+
+        conn.commit()
+        c.close()
+        conn.close()
+    return render_template("2player.html", title="2player", win_point=3, form=form, names=names)
 
 
 @app.route('/index/leader_board/')
