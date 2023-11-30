@@ -3,10 +3,10 @@ from flask_wtf import Form, RecaptchaField
 from wtforms import StringField, validators
 
 
-def unique_user(form, field):
-    '''
+def unique_user(form):
+    """
     when a user tries to submit a score to the leaderboard, they must use a unique name
-    '''
+    """
 
     db_path = 'database/pong.db'
     conn = sqlite3.connect(db_path)
@@ -21,3 +21,4 @@ def unique_user(form, field):
 class SubmitForm(Form):
     user_name = StringField('name', [validators.DataRequired(), unique_user])
     score = StringField("score")
+    selected_ai_speed = StringField("ai_speed")

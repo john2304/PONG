@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request
 from flask_wtf import FlaskForm, CSRFProtect, form
 from wtforms import StringField, SubmitField, validators
 from wtforms.validators import DataRequired
@@ -9,7 +9,8 @@ app = Flask(__name__)
 heroku = Heroku(app)
 
 # Set a secret key
-app.config['SECRET_KEY'] = '\xab\xbb\xb5([_c\x9f\xa2m\x00\xfdX\x03\x97\xa5\xe82\x1f\xf8\xda1\xd6\xd8'  # Replace with your actual secret key
+app.config[
+    'SECRET_KEY'] = '\xab\xbb\xb5([_c\x9f\xa2m\x00\xfdX\x03\x97\xa5\xe82\x1f\xf8\xda1\xd6\xd8'  # Replace with your actual secret key
 
 # Initialize CSRF protection
 csrf = CSRFProtect(app)
@@ -28,12 +29,14 @@ def helper_submit_score(user_name, score):
         db_path = 'database/pong.db'
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
-        c.execute("INSERT INTO leader_board (user_name, score) values (?, ?)",
-                  (form.user_name.data, form.score.data))
+        selected_ai_speed = request.form.get('ai_speed')
+        c.execute("INSERT INTO leader_board (user_name, score, selected_ai_speed) values (?, ?, ?)",
+                  (user_name, score, selected_ai_speed))
         conn.commit()
         conn.close()
         return True
-    except:
+    except Exception as e:
+        print(f"Error inserting into database: {e}")
         return False
 
 
@@ -53,50 +56,33 @@ def home():
 
 @app.route('/index/1player/', methods=['GET', 'POST'])
 def player1():
-
     # count number of players in database and assign that number +1 to default anon name
     db_path = 'database/pong.db'
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     names = [tup[0] for tup in c.execute("SELECT user_name FROM leader_board")]
-
-    form = SubmitForm()
-    if form.validate_on_submit():
-        # Perform the database submission operation here
-        new_entry = helper_submit_score(user_name=form.user_name.data, score=form.score.data)
-        c.execute("INSERT INTO leader_board (user_name, score) values (?, ?)",
-                  (form.user_name.data, form.score.data))
-
-        conn.commit()
-        c.close()
-        conn.close()
 
     # Get the selected AI speed from the form
     selected_ai_speed = request.form.get('ai_speed')
-    return render_template("1player.html", title="1player", ai_speed=selected_ai_speed, form=form, names=names)
-
-@app.route("/index/2player/", methods=['GET', 'POST'])
-def player2():
-    # count number of players in database and assign that number +1 to default anon name
-    db_path = 'database/pong.db'
-    conn = sqlite3.connect(db_path)
-    c = conn.cursor()
-    names = [tup[0] for tup in c.execute("SELECT user_name FROM leader_board")]
 
     form = SubmitForm()
     if form.validate_on_submit():
         # Perform the database submission operation here
         new_entry = helper_submit_score(user_name=form.user_name.data, score=form.score.data)
-        c.execute("INSERT INTO leader_board (user_name, score) values (?, ?)",
-                  (form.user_name.data, form.score.data))
-
         conn.commit()
         c.close()
         conn.close()
 
+    return render_template("1player.html", title="1player", ai_speed=selected_ai_speed, form=form, names=names)
+
+
+@app.route("/index/2player/", methods=['GET', 'POST'])
+def player2():
+    form = SubmitForm()
+
     # get selected score winpoint from the form
     selected_win_point = request.form.get('win_point')
-    return render_template("2player.html", title="2player", win_point=selected_win_point, form=form, names=names)
+    return render_template("2player.html", title="2player", win_point=selected_win_point, form=form)
 
 
 @app.route('/index/leader_board/')

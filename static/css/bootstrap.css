@@ -11,6 +11,7 @@ html {
 }
 body {
   margin: 0;
+  background: linear-gradient(to bottom, purple, yellow); /* Gradient from purple to yellow */
 }
 article,
 aside,
@@ -1086,7 +1087,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
-  background-color: #fff;
+  background: linear-gradient(to bottom, purple, yellow); /* Gradient from purple to yellow */
 }
 input,
 button,

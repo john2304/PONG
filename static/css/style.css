@@ -2,9 +2,9 @@
 
 /* Reset some default styles for body and anchor tags */
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0; /* Set your desired background color */
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, purple, yellow); /* Gradient from purple to yellow */
 }
 
 .form-horizontal{
@@ -43,60 +43,62 @@ th {
 }
 
 a {
-  text-decoration: none; /* Remove underline from links */
-  color: #000; /* Set link color */
+    text-decoration: none; /* Remove underline from links */
+    color: white; /* Set link color */
 }
 
 /* Style for the index screen */
 .index-screen {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .court {
-  width: 80%; /* Adjust the width of the court */
-  height: 80vh; /* Adjust the height of the court */
-  border: 20px solid #4bf71b; /* Add a thick green outline */
-  position: relative;
+    width: 80%; /* Adjust the width of the court */
+    height: 80vh; /* Adjust the height of the court */
+    border: 20px solid #4bf71b; /* Add a thick green outline */
+    position: relative;
 }
 
 .court::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 100%;
-  border-left: 10px dotted #4bf71b; /* Create a thick dotted line */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 100%;
+    border-left: 10px dotted #4bf71b; /* Create a thick dotted line */
 }
 
 .two-player-link, .one-player-link {
-  position: absolute;
-  font-family: impact, serif;
-  color: #dbdbdb;
-  font-size: 60px; /* Set your desired font size */
-  text-align: center; /* Center text */
-  width: 200px; /* Adjust width of links */
-  padding: 10px; /* Add padding for better visibility */
-  z-index: 1; /* Ensure links appear above the court */
+    position: absolute;
+    font-family: impact, serif;
+    color: white;
+    font-size: 60px; /* Set your desired font size */
+    text-align: center; /* Center text */
+    width: 200px; /* Adjust width of links */
+    padding: 10px; /* Add padding for better visibility */
+    z-index: 1; /* Ensure links appear above the court */
 }
 
 .two-player-link {
-  top: calc(50% - 50px); /* Adjust vertically to center the link */
-  left: calc(50% + 20px); /* Adjust distance from the left side */
-  transform: translateY(-50%);
+    color: #4bf71b;
+    top: calc(50% - 50px); /* Adjust vertically to center the link */
+    left: calc(50% + 50px); /* Adjust distance from the left side */
+    transform: translateY(-50%);
 }
 
 .one-player-link {
-  top: calc(50% - 50px); /* Adjust vertically to center the link */
-  right: calc(50% + 20px); /* Adjust distance from the right side */
-  transform: translateY(-50%);
+    color: #4bf71b;
+    top: calc(50% - 50px); /* Adjust vertically to center the link */
+    right: calc(50% + 50px); /* Adjust distance from the right side */
+    transform: translateY(-50%);
 }
 
 
@@ -115,6 +117,7 @@ a {
 }
 
 
+
 #winnerDisplay {
     display: none;
     position: absolute;
@@ -125,4 +128,47 @@ a {
     padding: 20px; /* Add padding for content */
     border: 1px solid black; /* Add border for visibility */
     z-index: 9999; /* Higher value to ensure it's on top */
+}
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar-inverse .navbar-right > li > a {
+    font-family: Impact, sans-serif;
+    font-size: 20px;
+    color: white !important;
+}
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar-inverse .navbar-nav > li > a > span {
+    color: white !important;
+}
+
+/* General table styles */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #2e6da4;
+    font-size: 25px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+/* Header row styles */
+.leaderboard-table th {
+    background-color: #4CAF50;
+    text-align: left;
+}
+
+/* Active row styles */
+.leaderboard-table .active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Right-aligned cell styles */
+.leaderboard-table .right-align {
+    text-align: right;
 }

@@ -9,10 +9,11 @@
         {{ form.csrf_token }}
         <label for="aiSpeedSelector">Choose AI Speed:</label>
         <select id="aiSpeedSelector" name="ai_speed">
-            <option value="11" {% if ai_speed == '11' %} selected {% endif %}>Low</option>
-            <option value="15" {% if ai_speed == '15' %} selected {% endif %}>Medium</option>
+            <option value="8" {% if ai_speed == '8' %} selected {% endif %}>Low</option>
+            <option value="14" {% if ai_speed == '14' %} selected {% endif %}>Medium</option>
             <option value="20" {% if ai_speed == '20' %} selected {% endif %}>High</option>
         </select>
+        <input type="hidden" name="selected_ai_speed" value="{{ai_speed}}">
         <input class="btn btn-default" type="submit" value="Play">
     </form>
     <form class="form-horizontal" id="form-hidden" method="post" role="form">
@@ -43,6 +44,9 @@
 
         //track score
         score1 = score2 = 0;
+
+        // Set up a variable to control scoring frequency
+        let canScore = true;
 
         // initial velocity of ball
         xv = yv = 10;
@@ -125,7 +129,14 @@
             // Increase score if ball hits player 1's paddle
             if (bx < pt && (by > p1y && by < p1y + ph)) {
                 xv = -xv; // Reverse ball's direction
-                score1++;
+                // Check if scoring is allowed (based on the delay mechanism)
+                if (canScore) {
+                    score1++;
+                    canScore = false; // Disable scoring temporarily
+                    setTimeout(() => {
+                        canScore = true; // Enable scoring after a delay (1 second in this example)
+                    }, 1000); // Adjust the delay time in milliseconds as needed
+                }
             }
 
             // Check if ball passes the paddles without being hit
@@ -215,10 +226,10 @@
             canvas_context.fillRect(bx - bd / 2, by - bd / 2, bd, bd);
 
             // Draw score1 at center-top of the canvas
-            canvas_context.fillStyle = "white";
-            canvas_context.font = "30px Arial";
+            canvas_context.fillStyle = "green";
+            canvas_context.font = "60px Impact";
             canvas_context.textAlign = "center";
-            canvas_context.fillText(score1, canvas.width / 2, 30);
+            canvas_context.fillText(score1, canvas.width / 2, 60);
 
         }
 

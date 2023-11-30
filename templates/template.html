@@ -53,10 +53,19 @@
                 localStorage.setItem('music_enabled', 'false'); // Save music preference
             }
         }
+        // to override the bootstraps deafult css
+        $(document).ready(function () {
+            $('.navbar-inverse .navbar-nav > li > a').css({
+                'font-family': 'Impact, sans-serif',
+                'font-size': '20px',
+                'color': 'white'
+            });
+            $('.navbar-inverse .navbar-right > li > a').css('color', 'white');
+        });
     </script>
 </head>
     <body>
-        <nav class="navbar navbar-inverse" style="border-radius:5px;">
+        <nav class="navbar navbar-inverse" style="border-radius:10px;">
             <div class="container-fluid" style="background:black;">
                 <ul class="nav navbar-nav">
                     <li><a href="/index/">Home</a></li>
