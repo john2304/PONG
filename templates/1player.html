@@ -4,13 +4,12 @@
 <canvas id="canvas" width="1040" height="720" style="border:1px solid #000;"></canvas>
 
 <div class="container">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <form action='/index/1player/' method="POST">
         {{ form.csrf_token }}
         <label for="aiSpeedSelector">Choose AI Speed:</label>
         <select id="aiSpeedSelector" name="ai_speed">
-            <option value="10" {% if ai_speed == '10' %} selected {% endif %}>Low</option>
+            <option value="11" {% if ai_speed == '11' %} selected {% endif %}>Low</option>
             <option value="15" {% if ai_speed == '15' %} selected {% endif %}>Medium</option>
             <option value="20" {% if ai_speed == '20' %} selected {% endif %}>High</option>
         </select>
@@ -48,8 +47,16 @@
         // initial velocity of ball
         xv = yv = 10;
 
+        // Define constants for canvas and paddle dimensions
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const paddleWidth = pt;
+        const paddleHeight = ph;
+
         //audio
         var rebound_sound = new Audio('/static/sounds/bounce.mp3');
+        var gameover_sound = new Audio('/static/sounds/gameover.mp3');
+
 
         // speed ai moves paddle
         var ais = {{ai_speed}}
@@ -62,7 +69,10 @@
         // get score and add value to hidden form
         var calculate_score = function () {
             // console.log("submit " + score1 + ", " + score2);
-
+            //play game end sound
+            if (play_fx) {
+                gameover_sound.play();
+            }
             // show hidden form
             document.getElementById("form-hidden").style.display = "block";
 
@@ -82,9 +92,15 @@
             stop = setInterval(update, 1000 / 30);
 
             //user controls
-            canvas.addEventListener("mousemove", function (e) {
+            document.addEventListener("mousemove", function (e) {
                 // keep center of paddle 1 at location of users mouse
-                p1y = e.clientY - ph;
+                //p1y = e.clientY - ph;
+
+                // Calculate new paddle position based on mouse
+                const newPaddleY = e.clientY - paddleHeight / 2;
+
+                // Ensure paddle 1 stays within canvas boundaries
+                p1y = Math.max(Math.min(newPaddleY, canvasHeight - paddleHeight), 0);
             });
 
         }
@@ -132,10 +148,9 @@
             }
 
             // if ball is at left side of screen
-            if (bx < 0) {
+            if (bx == 0) {
                 // if ball is above bottom of paddle and below top of paddle, bounce it
                 if (by > p1y && by < p1y + ph) {
-
                     //play rebound sound
                     if (play_fx) {
                         rebound_sound.play();
@@ -153,7 +168,6 @@
             if (bx > canvas.width) {
                 // if ball is above bottom of paddle and below top of paddle, bounce it
                 if (by > p2y && by < p2y + ph) {
-
                     //play rebound sound
                     if (play_fx) {
                         rebound_sound.play();
@@ -175,6 +189,16 @@
                 });
             } else {
                 p2y -= ais;
+            }
+
+            // Update paddle 2 (AI or keyboard-controlled)
+            // Ensure paddle 2 stays within canvas boundaries
+            if (p2y + ph / 2 < by) {
+                const newPaddle2Y = p2y + ais;
+                p2y = Math.max(Math.min(newPaddle2Y, canvasHeight - paddleHeight), 0);
+            } else {
+                const newPaddle2Y = p2y - ais;
+                p2y = Math.max(Math.min(newPaddle2Y, canvasHeight - paddleHeight), 0);
             }
 
 

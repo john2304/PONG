@@ -102,11 +102,16 @@ a {
 
 /* Center the canvas horizontally and vertically */
 #canvas {
+    height: 720px;
+    width: 1040px;
     position: absolute;
+    display: block;
     top: 50%;
+    margin: 0 auto; /* centres the canvas horizontally */
     left: 50%;
     transform: translate(-50%, -50%);
     border: 1px solid #000;
+    z-index: 1; /* ensures the canvas is on top*/
 }
 
 

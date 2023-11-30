@@ -46,7 +46,7 @@ def helper_get_leaderboard():
     return [val for val in enumerate(c.execute("SELECT * FROM leader_board ORDER BY score DESC"))]
 
 
-@app.route("/")
+@app.route("/index/")
 def home():
     return render_template('index.html')
 

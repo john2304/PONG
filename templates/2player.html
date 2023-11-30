@@ -50,13 +50,16 @@
 
         //audio
         var rebound_sound = new Audio('/static/sounds/bounce.mp3');
-
+        var gameover_sound = new Audio('/static/sounds/gameover.mp3');
 
 
         // get score and add value to hidden form
         var calculate_score = function (winnerName, winnerScore) {
             // console.log("submit " + score1 + ", " + score2);
-
+            //play game end sound
+            if (play_fx) {
+                gameover_sound.play();
+            }
             // calculate score, may be redundant if function is just used to toggle view, but isn't expensive
             document.getElementById("score").value = score1 - score2;
 
