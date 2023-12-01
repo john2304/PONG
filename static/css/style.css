@@ -12,6 +12,7 @@ body {
     margin-top: 5px;
 }
 
+/* for user forms and such */
 .container{
     width:40%;
     margin-left:30%;
@@ -59,12 +60,13 @@ a {
 }
 
 .court {
-    width: 80%; /* Adjust the width of the court */
-    height: 80vh; /* Adjust the height of the court */
+    width: 60%; /* Adjust the width of the court */
+    height: 80%; /* Adjust the height of the court */
     border: 20px solid #4bf71b; /* Add a thick green outline */
-    position: relative;
+    position: absolute;
 }
 
+/* index screen display court */
 .court::before {
     content: '';
     position: absolute;
@@ -76,13 +78,14 @@ a {
     border-left: 10px dotted #4bf71b; /* Create a thick dotted line */
 }
 
+
 .two-player-link, .one-player-link {
     position: absolute;
     font-family: impact, serif;
     color: white;
-    font-size: 60px; /* Set your desired font size */
-    text-align: center; /* Center text */
-    width: 200px; /* Adjust width of links */
+    font-size: 60px;
+    text-align: center;
+    width: 300px; /* Adjust width of links */
     padding: 10px; /* Add padding for better visibility */
     z-index: 1; /* Ensure links appear above the court */
 }
@@ -104,8 +107,8 @@ a {
 
 /* Center the canvas horizontally and vertically */
 #canvas {
-    height: 720px;
-    width: 1040px;
+    height: 60%;
+    width: 60%;
     position: absolute;
     display: block;
     top: 50%;
@@ -121,8 +124,8 @@ a {
 #winnerDisplay {
     display: none;
     position: absolute;
-    top: 50%; /* Adjust the values as needed */
-    left: 50%; /* Adjust the values as needed */
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     background-color: white; /* Add a background color for better visibility */
     padding: 20px; /* Add padding for content */
@@ -130,6 +133,7 @@ a {
     z-index: 9999; /* Higher value to ensure it's on top */
 }
 
+/* styling the navbar default colours */
 .navbar-inverse .navbar-nav > li > a,
 .navbar-inverse .navbar-right > li > a {
     font-family: Impact, sans-serif;
@@ -171,4 +175,23 @@ a {
 /* Right-aligned cell styles */
 .leaderboard-table .right-align {
     text-align: right;
+}
+
+label[for="aiSpeedSelector"],
+label[for="winpointSelector"]{
+    color: green;
+    font-size: 18px;
+    font-family: Impact, serif;
+}
+
+#winpointSelector {
+    font-size: 16px; /* Increase font size */
+    padding: 8px; /* Increase padding around the options */
+    width: 200px; /* Adjust the width of the select box */
+}
+
+#aiSpeedSelector{
+    font-size: 16px; /* Increase font size */
+    padding: 8px; /* Increase padding around the options */
+    width: 200px; /* Adjust the width of the select box */
 }

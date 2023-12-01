@@ -1,3 +1,4 @@
+<!-- template file that will be pasted onto all other pages to reduce code duplication-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,27 +7,32 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- page icon -->
     <link rel="shortcut icon" type="image/x-icon" href="/static/pong.ico">
 
+    <!-- linking style sheets from static -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
+    <!-- linking remote css and java -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src='https://www.google.com/recaptcha/api.js'></script>
 
+    <!-- background music to loop -->
     <audio id="backgroundMusic" autoplay loop>
         <source src="/static/sounds/background.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- javascript for the header navbar and sound controls -->
     <script>
         // declare globals to control sounds
         var play_fx = true;
         var play_music = true;
 
+        // to mute and unmute audio effects
         var toggle_fx = function(){
             play_fx = !play_fx;
                 if(play_fx){
@@ -39,6 +45,7 @@
                 }
         }
 
+        // to mute and unmute background music uses glyphicon library for icons
         var toggle_music = function(){
             var audio = document.getElementById('backgroundMusic');
              play_music = !play_music;
@@ -60,7 +67,7 @@
                 'font-size': '20px',
                 'color': 'white'
             });
-            $('.navbar-inverse .navbar-right > li > a').css('color', 'white');
+            $('.navbar-inverse .navbar-right > li > a').css('color', 'white'); // inline color chanfe
         });
     </script>
 </head>
@@ -72,6 +79,7 @@
                     <li><a href="/index/leader_board/">Leader Board</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
+                    <!-- audio controls -->
                     <li onclick="toggle_fx()">
                         <a><span id="fx_icon" class="glyphicon glyphicon-volume-up"></span> Sound</a></li>
                     <li onclick="toggle_music()">

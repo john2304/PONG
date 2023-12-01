@@ -1,11 +1,12 @@
 {% extends 'template.html' %}
 {% block content %}
 
-<canvas id="canvas" width="1040" height="720" style="border:1px solid #000;"></canvas>
+<!-- creating the game screen -->
+<canvas id="canvas" width="1040" height="720" style="border:5px solid #000;"></canvas>
 
 <div class="container">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+    <!-- user selection of winpoint form before game starts -->
     <form action='/index/2player/' method="POST">
         {{ form.csrf_token }}
         <label for="winpointSelector">Choose Win Point:</label>
@@ -23,211 +24,196 @@
         <h2>Winner: <span id="winnerName"></span></h2>
         <p>Score: <span id="winnerScore"></span></p>
     </div>
-    <script>
-        var stop;
-        var wait = 1000;
-        var keep_going = true;
+</div>
+<script>
 
-        //paddle y, thickness, height
-        p1y = p2y = 40;
-        pt=10;
-        ph=100;
-        //ball x, y, dimension
-        bx=by=50;
-        bd=6;
+    var stop;
+    var wait = 1000;
+    var keep_going = true;
 
-        //track score
-        score1 = score2 = 0;
+    // ball x, y, dimension
+    cx = cy = 50;
+    bd = 6;
 
-        // score to play to
-        win_point = {{win_point}}
+    // paddle y, thickness, height
+    p1y = p2y = 40;
+    pt = 10;
+    ph = 100;
 
-        // initial velocity of ball
-        xv = yv = 10;
+    // starting velocity of ball
+    xv = yv = 11;
 
-        // Flags to track key states
-        var keysPressed = {};
+    // score to play to
+    win_point = {{win_point}}
 
-        //audio
-        var rebound_sound = new Audio('/static/sounds/bounce.mp3');
-        var gameover_sound = new Audio('/static/sounds/gameover.mp3');
+    //track score
+    score1 = score2 = 0;
 
+    // Flags to track key states for flawless movement
+    var keysPressed = {};
 
-        // get score and add value to hidden form
-        var calculate_score = function (winnerName, winnerScore) {
-            // console.log("submit " + score1 + ", " + score2);
-            //play game end sound
-            if (play_fx) {
-                gameover_sound.play();
-            }
-            // calculate score, may be redundant if function is just used to toggle view, but isn't expensive
-            document.getElementById("score").value = score1 - score2;
-
-            // Update the winner name and score in the display
-            document.getElementById("winnerName").textContent = winnerName;
-            document.getElementById("winnerScore").textContent = winnerScore;
-
-            // Show the winner display
-            document.getElementById("winnerDisplay").style.display = "block";
-        };
-
-        // main game
-        window.onload = function () {
-            canvas = document.getElementById("canvas");
-            canvas_context = canvas.getContext("2d");
-
-            // Set up event listeners for controls
-            document.addEventListener("keydown", function (event) {
-                keysPressed[event.key] = true;
-            });
-
-            document.addEventListener("keyup", function (event) {
-                keysPressed[event.key] = false;
-            });
-
-            // frame rate for game
-            stop = setInterval(update, 1000 / 30);
+    //audio
+    var rebound_sound = new Audio('/static/sounds/bounce.mp3');
+    var gameover_sound = new Audio('/static/sounds/gameover.mp3');
 
 
+    // get score and add value to hidden form - not working
+    var calculate_score = function (winnerName, winnerScore) {
+        // console.log("submit " + score1 + ", " + score2);
+        //play game end sound
+        if (play_fx) {
+            gameover_sound.play();
         }
+        // calculate score, may be redundant if function is just used to toggle view, but isn't expensive
+        document.getElementById("score").value = score1 - score2;
 
-         function reset() {
-            // center ball
-            bx = canvas.width / 2;
-            by = canvas.height / 2;
+        // Update the winner name and score in the display
+        document.getElementById("winnerName").textContent = winnerName;
+        document.getElementById("winnerScore").textContent = winnerScore;
 
-            // reverse x velocity
-            xv = -xv;
+        // Show the winner display
+        document.getElementById("winnerDisplay").style.display = "block";
+    };
 
-            // start ball moving
-            yv = 3;
-        }
+    // main game setup
+    window.onload = function () {
+        canvas = document.getElementById("canvas");
+        canvas_context = canvas.getContext("2d");
 
-        function update() {
-            if (score1 >= win_point || score2 >= win_point) {
-                clearInterval(stop);
-                if (score1 > score2) {
-                    calculate_score("Player 1", score1); <!-- not working -->
-                } else {
-                    calculate_score("Player 2", score2); <!-- not working -->
-                }
-            }
+        // set frame rate
+        stop = setInterval(update, 1000 / 30);
 
-            // Smooth movement for player 1 (w,s)
-            if (keysPressed["w"] && p1y > 0) {
-                p1y -= 10;
-            } else if (keysPressed["s"] && p1y < canvas.height - ph) {
-                p1y += 10;
-            }
-
-            // Smooth movement for player 2 (arrow keys)
-            if (keysPressed["ArrowUp"] && p2y > 0) {
-                p2y -= 10;
-            } else if (keysPressed["ArrowDown"] && p2y < canvas.height - ph) {
-                p2y += 10;
-            }
-
-            // move ball, add velocity to coordinate of ball
-            bx += xv;
-            by += yv;
-
-            // bounce ball at edges of screen
-            // if ball is at bottom of screen trying to move down
-            if (by < 0 && yv < 0) {
-                // reverse y velocity
-                yv = -yv
-            }
-            // if ball is at top of screen trying to move up
-            if (by > canvas.height && yv > 0) {
-                // reverse y velocity
-                yv = -yv
-            }
-
-            // if ball is at left side of screen
-            if (bx < 0) {
-                // if ball is above bottom of paddle and below top of paddle, bounce it
-                if (by > p1y && by < p1y + ph) {
-
-                    //play rebound sound
-                    if (play_fx) {
-                        rebound_sound.play();
-                    }
-
-                    // reverse x velocity
-                    xv = -xv;
-                    // reduce y velocity depending on where on the paddle the ball hits
-                    dy = by - (p1y + ph / 2);
-                    yv = dy * 0.3;
-                }
-                // paddle1 missed ball
-                else {
-                    // award player 2 one point, reset game
-                    score2 = score2 + 1;
-                    reset();
-                }
-            }
-
-            // if ball is at right of screen
-            if (bx > canvas.width) {
-                // if ball is above bottom of paddle and below top of paddle, bounce it
-                if (by > p2y && by < p2y + ph) {
-
-                    //play rebound sound
-                    if (play_fx) {
-                        rebound_sound.play();
-                    }
-
-                    // reverse x velocity
-                    xv = -xv;
-                    // reduce y velocity depending on where on the paddle the ball hits
-                    dy = by - (p2y + ph / 2);
-                    yv = dy * 0.3;
-                }
-                // paddle1 missed ball
-                else {
-                    // award player 1 one point, reset game
-                    score1 = score1 + 1;
-                    reset();
-                }
-            }
-
-            canvas_context.fillStyle = "black";
-            canvas_context.fillRect(0, 0, canvas.width, canvas.height);
-
-
-            canvas_context.fillStyle = "white";
-            // draw paddles, that's a paddlin
-            canvas_context.fillRect(0, p1y, pt, ph);
-            canvas_context.fillRect(canvas.width - pt, p2y, pt, ph);
-
-            // ball
-            canvas_context.fillRect(bx - bd / 2, by - bd / 2, bd, bd);
-
-            //score1 on left of screen, score2 on right
-            canvas_context.font = "60px Impact";
-            canvas_context.fillStyle = "green";
-            canvas_context.fillText(score1, 100, 150);
-            canvas_context.fillText(score2, canvas.width - 100, 150);
-
-        }
-
-        // continuously validate form input, show user that a unique name must be chosen
-        $("#user_name").change(function () {
-            if (names.includes($("#user_name").val())) {
-                // stop user from submitting form with invalid name
-                $("#errors").text("Sorry, this name is taken").css({"color": "red"});
-                $('#submitButton').attr("disabled", true);
-            } else {
-                // allow user to submit form again
-                $("#errors").text("This name is free!").css({"color": "green"});
-                $('#submitButton').attr("disabled", false);
-            }
+        //event listeners for controls - down
+        document.addEventListener("keydown", function (event) {
+            keysPressed[event.key] = true;
+        });
+        //event listeners for controls - up
+        document.addEventListener("keyup", function (event) {
+            keysPressed[event.key] = false;
         });
 
+    }
 
-    </script>
+    // resets the game for beginning play
+    function reset() {
+        // center ball
+        cx = canvas.width / 2;
+        cy = canvas.height / 2;
 
-</div>
+        // reverse x velocity
+        xv = -xv;
 
-<script src="/static/js/script.js"></script>
+        // start ball moving
+        yv = 4;
+    }
+
+    // game loop
+    function update() {
+        // win check
+        if (score1 >= win_point || score2 >= win_point) {
+            clearInterval(stop);
+            if (score1 > score2) {
+                calculate_score("Player 1", score1);
+            } else {
+                calculate_score("Player 2", score2);
+            }
+        }
+
+        // Smooth movement for player 1 (w,s), to stop the browsers default delayed key page scroll
+        if (keysPressed["w"] && p1y > 0) {
+            p1y -= 10;
+        } else if (keysPressed["s"] && p1y < canvas.height - ph) {
+            p1y += 10;
+        }
+
+        // Smooth movement for player 2 (arrow keys), to stop the browsers default delayed key page scroll
+        if (keysPressed["ArrowUp"] && p2y > 0) {
+            p2y -= 10;
+        } else if (keysPressed["ArrowDown"] && p2y < canvas.height - ph) {
+            p2y += 10;
+        }
+
+        // add speed to coordinate of ball
+        cx += xv;
+        cy += yv;
+
+        // to make the ball bounce at the edges of the screen
+        // ball is at bottom of screen moving downwards
+        if (cy < 0 && yv < 0) {
+            // reverse y velocity
+            yv = -yv
+        }
+        // ball is at top of screen moving upwards
+        if (cy > canvas.height && yv > 0) {
+            // reverse y velocity
+            yv = -yv
+        }
+
+        // ball is at left side of screen
+        if (cx < 0) {
+            // ball has touched boundaries of paddle, bounce it
+            if (cy > p1y && cy < p1y + ph) {
+                // play rebound sound
+                if (play_fx) {
+                    rebound_sound.play();
+                }
+
+                // reverse x velocity
+                xv = -xv;
+                // reduce y velocity based on hit location of paddle
+                dy = cy - (p1y + ph / 2);
+                yv = dy * 0.3;
+            }
+            // player 1 paddle missed ball
+            else {
+                // award player 2 one point, reset game
+                score2 = score2 + 1;
+                reset();
+            }
+        }
+
+        // ball is at right side of screen
+        if (cx > canvas.width) {
+            // ball has touched boundaries of paddle, bounce it
+            if (cy > p2y && cy < p2y + ph) {
+                //play rebound sound
+                if (play_fx) {
+                    rebound_sound.play();
+                }
+
+                // reverse x velocity
+                xv = -xv;
+                // reduce y velocity based on hit location of paddle
+                dy = cy - (p2y + ph / 2);
+                yv = dy * 0.3;
+            }
+            // player 2 paddle missed ball
+            else {
+                // award player 1 one point, reset game
+                score1 = score1 + 1;
+                reset();
+            }
+        }
+
+        // styling the canvas
+        canvas_context.fillStyle = "black";
+        canvas_context.fillRect(0, 0, canvas.width, canvas.height);
+        canvas_context.fillStyle = "white";
+
+        // ball
+        canvas_context.fillRect(cx - bd / 2, cy - bd / 2, bd, bd);
+
+        // draw paddles
+        canvas_context.fillRect(0, p1y, pt, ph);
+        canvas_context.fillRect(canvas.width - pt, p2y, pt, ph);
+
+        // styling and positioning score1 on left side of screen and score2 on right side
+        canvas_context.font = "60px Impact";
+        canvas_context.fillStyle = "green";
+        canvas_context.fillText(score1, 100, 150);
+        canvas_context.fillText(score2, canvas.width - 100, 150);
+
+    };
+</script>
+
 {% endblock %}
